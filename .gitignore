@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Environment (CRITICAL — يحتوي أسرار)
+.env
+.env.local
+.env.*.local
+
+# Termux fixes (binary cache)
+.termux-fixes/
+
+# Logs & PIDs
+.logs/
+.pids/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Backups
+*.bak*
+*.broken
+*.backup-*
+*.bak2
+*.bak3
+*.bak4
+*.bak5
+*.bak6
+*.bak7
+*.bak8
+*.bak9
+*.bak10
+*.bak11
+*.bak12
+*.bak13
+*.bak14
+*.bak15
+*.bak16
+*.bak17
+App.tsx.bak*
+index.html.bak
+package.json.bak
+main.tsx.bak
+start-all.sh.bak
+lib/api-spec/openapi.yaml.bak
+
+# Temp
+*.tmp
+tmp/

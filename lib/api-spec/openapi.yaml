@@ -1,0 +1,740 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: content
+    description: Public support content
+  - name: bookings
+    description: Session booking requests
+  - name: administration
+    description: Protected content and booking management
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /public/pathways:
+    get:
+      operationId: listPublicPathways
+      tags: [content]
+      summary: List published support pathways
+      responses:
+        "200":
+          description: Published support pathways
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pathway"
+  /public/resources:
+    get:
+      operationId: listPublicResources
+      tags: [content]
+      summary: List published library resources
+      responses:
+        "200":
+          description: Published library resources
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContentItem"
+  /bookings:
+    post:
+      operationId: createBooking
+      tags: [bookings]
+      summary: Submit a session booking request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInput"
+      responses:
+        "201":
+          description: Booking request received
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookingReceipt"
+        "400":
+          description: Invalid booking details
+  /admin/summary:
+    get:
+      operationId: getAdminSummary
+      tags: [administration]
+      summary: Get content and booking overview
+      responses:
+        "200":
+          description: Summary for the admin dashboard
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSummary"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+  /admin/bookings:
+    get:
+      operationId: listAdminBookings
+      tags: [administration]
+      summary: List booking requests
+      responses:
+        "200":
+          description: Booking requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+  /admin/bookings/{bookingId}:
+    patch:
+      operationId: updateBookingStatus
+      tags: [administration]
+      summary: Update a booking status
+      parameters:
+        - in: path
+          name: bookingId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingStatusUpdate"
+      responses:
+        "200":
+          description: Updated booking
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+        "404":
+          description: Booking not found
+  /admin/pathways:
+    get:
+      operationId: listAdminPathways
+      tags: [administration]
+      summary: List pathways for management
+      responses:
+        "200":
+          description: All pathways
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pathway"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+    post:
+      operationId: createPathway
+      tags: [administration]
+      summary: Create a support pathway
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PathwayInput"
+      responses:
+        "201":
+          description: Created pathway
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pathway"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+  /admin/pathways/{pathwayId}:
+    patch:
+      operationId: updatePathway
+      tags: [administration]
+      summary: Update a support pathway
+      parameters:
+        - in: path
+          name: pathwayId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PathwayInput"
+      responses:
+        "200":
+          description: Updated pathway
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pathway"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+        "404":
+          description: Pathway not found
+    delete:
+      operationId: deletePathway
+      tags: [administration]
+      summary: Delete a support pathway
+      parameters:
+        - in: path
+          name: pathwayId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Pathway deleted
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+        "404":
+          description: Pathway not found
+  /admin/resources:
+    get:
+      operationId: listAdminResources
+      tags: [administration]
+      summary: List content for management
+      responses:
+        "200":
+          description: All library resources
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContentItem"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+    post:
+      operationId: createResource
+      tags: [administration]
+      summary: Create a library resource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContentItemInput"
+      responses:
+        "201":
+          description: Created resource
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentItem"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+  /admin/resources/{resourceId}:
+    patch:
+      operationId: updateResource
+      tags: [administration]
+      summary: Update a library resource
+      parameters:
+        - in: path
+          name: resourceId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContentItemInput"
+      responses:
+        "200":
+          description: Updated resource
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentItem"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+        "404":
+          description: Resource not found
+    delete:
+      operationId: deleteResource
+      tags: [administration]
+      summary: Delete a library resource
+      parameters:
+        - in: path
+          name: resourceId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Resource deleted
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+        "404":
+          description: Resource not found
+
+  /public/help-now:
+    get:
+      operationId: getHelpNow
+      tags: [public]
+      summary: Get emergency contacts, organizations and personal contact
+      responses:
+        "200":
+          description: Help now data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HelpNowResponse"
+
+  /admin/emergency-contacts:
+    post:
+      operationId: createEmergencyContact
+      tags: [administration]
+      summary: Create emergency contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmergencyContactInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmergencyContact"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+
+  /admin/emergency-contacts/{contactId}:
+    patch:
+      operationId: updateEmergencyContact
+      tags: [administration]
+      summary: Update emergency contact
+      parameters:
+        - in: path
+          name: contactId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmergencyContactInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmergencyContact"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+        "404":
+          description: Contact not found
+    delete:
+      operationId: deleteEmergencyContact
+      tags: [administration]
+      summary: Delete emergency contact
+      parameters:
+        - in: path
+          name: contactId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+        "404":
+          description: Contact not found
+
+  /admin/organizations:
+    post:
+      operationId: createOrganization
+      tags: [administration]
+      summary: Create organization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrganizationInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+
+  /admin/organizations/{orgId}:
+    patch:
+      operationId: updateOrganization
+      tags: [administration]
+      summary: Update organization
+      parameters:
+        - in: path
+          name: orgId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrganizationInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+        "404":
+          description: Organization not found
+    delete:
+      operationId: deleteOrganization
+      tags: [administration]
+      summary: Delete organization
+      parameters:
+        - in: path
+          name: orgId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+        "404":
+          description: Organization not found
+
+  /admin/settings/{key}:
+    patch:
+      operationId: updateSiteSetting
+      tags: [administration]
+      summary: Update site setting
+      parameters:
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteSettingInput"
+      responses:
+        "200":
+          description: Updated
+        "401":
+          description: Authentication required
+        "403":
+          description: Admin role required
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    Pathway:
+      type: object
+      required: [id, slug, title, description, steps, activities, published]
+      properties:
+        id: { type: string }
+        slug: { type: string }
+        title: { type: string }
+        description: { type: string }
+        steps:
+          type: array
+          items: { type: string }
+        activities:
+          type: array
+          items: { type: string }
+        coverImage: { type: ["string", "null"] }
+        definition: { type: ["string", "null"] }
+        forms:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              desc: { type: string }
+        causes:
+          type: array
+          items: { type: string }
+        symptoms:
+          type: array
+          items: { type: string }
+        helpSources:
+          type: array
+          items: { type: string }
+        audioUrl: { type: ["string", "null"] }
+        videoUrl: { type: ["string", "null"] }
+        heroImage: { type: ["string", "null"] }
+        published: { type: boolean }
+    PathwayInput:
+      type: object
+      required: [slug, title, description, steps, activities, published]
+      properties:
+        slug: { type: string, minLength: 2 }
+        title: { type: string, minLength: 2 }
+        description: { type: string, minLength: 5 }
+        steps:
+          type: array
+          items: { type: string }
+        activities:
+          type: array
+          items: { type: string }
+        coverImage: { type: ["string", "null"] }
+        definition: { type: ["string", "null"] }
+        forms:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              desc: { type: string }
+        causes:
+          type: array
+          items: { type: string }
+        symptoms:
+          type: array
+          items: { type: string }
+        helpSources:
+          type: array
+          items: { type: string }
+        audioUrl: { type: ["string", "null"] }
+        videoUrl: { type: ["string", "null"] }
+        heroImage: { type: ["string", "null"] }
+        published: { type: boolean }
+    ContentItem:
+      type: object
+      required: [id, title, summary, kind, category, published]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        summary: { type: string }
+        kind:
+          type: string
+          enum: [article, guide, course, video, audio]
+        category: { type: string }
+        body: { type: ["string", "null"] }
+        mediaUrl: { type: ["string", "null"] }
+        coverImage: { type: ["string", "null"] }
+        author: { type: ["string", "null"] }
+        duration: { type: ["string", "null"] }
+        published: { type: boolean }
+    ContentItemInput:
+      type: object
+      required: [title, summary, kind, category, published]
+      properties:
+        title: { type: string, minLength: 2 }
+        summary: { type: string, minLength: 5 }
+        kind:
+          type: string
+          enum: [article, guide, course, video, audio]
+        category: { type: string, minLength: 1 }
+        body: { type: ["string", "null"] }
+        mediaUrl: { type: ["string", "null"] }
+        coverImage: { type: ["string", "null"] }
+        author: { type: ["string", "null"] }
+        duration: { type: ["string", "null"] }
+        published: { type: boolean }
+    BookingInput:
+      type: object
+      required: [nickname, contactMethod, contactValue, preferredDate, preferredTime, consent]
+      properties:
+        nickname: { type: string, minLength: 2, maxLength: 80 }
+        contactMethod:
+          type: string
+          enum: [phone, whatsapp, email]
+        contactValue: { type: string, minLength: 5, maxLength: 120 }
+        preferredTime:
+          type: string
+          enum: [morning, afternoon, evening, anytime]
+        preferredDate: { type: string, format: date }
+        consent: { type: boolean, const: true }
+    BookingReceipt:
+      type: object
+      required: [id, status]
+      properties:
+        id: { type: string }
+        status:
+          type: string
+          enum: [new]
+    Booking:
+      type: object
+      required: [id, nickname, contactMethod, contactValue, preferredDate, preferredTime, status, createdAt]
+      properties:
+        id: { type: string }
+        nickname: { type: string }
+        contactMethod:
+          type: string
+          enum: [phone, whatsapp, email]
+        contactValue: { type: string }
+        preferredTime:
+          type: string
+          enum: [morning, afternoon, evening, anytime]
+        preferredDate: { type: string, format: date }
+        status:
+          type: string
+          enum: [new, reviewing, contacted, completed, closed]
+        createdAt: { type: string, format: date-time }
+    BookingStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [new, reviewing, contacted, completed, closed]
+    AdminSummary:
+      type: object
+      required: [bookings, pathways, resources, newBookings]
+      properties:
+        bookings: { type: integer }
+        pathways: { type: integer }
+        resources: { type: integer }
+        newBookings: { type: integer }
+
+
+    EmergencyContact:
+      type: object
+      required: [id, label, number, published]
+      properties:
+        id: { type: string }
+        label: { type: string }
+        number: { type: string }
+        description: { type: ["string", "null"] }
+        sortOrder: { type: string }
+        published: { type: boolean }
+
+    EmergencyContactInput:
+      type: object
+      required: [label, number]
+      properties:
+        label: { type: string, minLength: 1 }
+        number: { type: string, minLength: 1 }
+        description: { type: ["string", "null"] }
+        sortOrder: { type: string }
+        published: { type: boolean }
+
+    Organization:
+      type: object
+      required: [id, name, description, published]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string }
+        phone: { type: ["string", "null"] }
+        url: { type: ["string", "null"] }
+        sortOrder: { type: string }
+        published: { type: boolean }
+
+    OrganizationInput:
+      type: object
+      required: [name, description]
+      properties:
+        name: { type: string, minLength: 1 }
+        description: { type: string, minLength: 1 }
+        phone: { type: ["string", "null"] }
+        url: { type: ["string", "null"] }
+        sortOrder: { type: string }
+        published: { type: boolean }
+
+    HelpNowResponse:
+      type: object
+      required: [contacts, organizations, personalContact]
+      properties:
+        contacts:
+          type: array
+          items: { $ref: "#/components/schemas/EmergencyContact" }
+        organizations:
+          type: array
+          items: { $ref: "#/components/schemas/Organization" }
+        personalContact:
+          type: object
+          properties:
+            name: { type: string }
+            whatsapp: { type: ["string", "null"] }
+            note: { type: ["string", "null"] }
+
+    SiteSettingInput:
+      type: object
+      required: [value]
+      properties:
+        value: { type: ["string", "null"] }

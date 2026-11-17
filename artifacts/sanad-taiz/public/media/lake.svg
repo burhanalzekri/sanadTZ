@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#87ceeb"/>
+      <stop offset="100%" stop-color="#e0f6ff"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a9eb8"/>
+      <stop offset="100%" stop-color="#2c6e82"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="300" fill="url(#sky)"/>
+  <circle cx="650" cy="100" r="40" fill="#fff9c4" opacity="0.9"/>
+  <path d="M0 300 L200 180 L400 280 L600 150 L800 250 L800 300 Z" fill="#2c5f4e"/>
+  <path d="M0 300 L150 220 L300 300 Z" fill="#1a3d31"/>
+  <rect y="300" width="800" height="200" fill="url(#water)"/>
+  <ellipse cx="400" cy="380" rx="200" ry="10" fill="#ffffff" opacity="0.2"/>
+</svg>

@@ -1,0 +1,23 @@
+{
+  "name": "سَنَد تعز — مساحة للخطوة الأولى",
+  "short_name": "سَنَد",
+  "description": "مساحة مجتمعية آمنة للدعم النفسي — تعز",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#faf5eb",
+  "theme_color": "#293653",
+  "categories": ["health", "lifestyle"],
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "أرقام الطوارئ", "url": "/help-now", "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }] },
+    { "name": "مقاييس نفسية", "url": "/assessment", "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }] },
+    { "name": "طلب جلسة", "url": "/booking", "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }] }
+  ]
+}
